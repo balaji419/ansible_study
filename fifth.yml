@@ -1,0 +1,91 @@
+---
+ - hosts: balajiserver
+   #become: true
+   serial: 1
+   tasks:
+
+
+   - name: get os name
+     shell: rpm --query centos-release
+     ignore_errors: yes
+     register: os_version
+
+
+   - name: get apache version
+     shell: 
+       cmd: rpm -qa | grep  httpd
+     ignore_errors: yes
+     register: httpd_version
+
+   - name: get ntpd version
+     shell:
+       cmd: rpm -qa | grep  ntp-
+     ignore_errors: yes
+     register: ntp_version
+
+   - name: get_trend_micro_version
+     shell:
+       cmd: rpm -qa | grep  ds_agent
+     ignore_errors: yes
+     register: tm_version
+
+
+   - name: get mysql version
+     shell:
+       cmd: rpm -qa | grep -i mysql | head -n 1
+     ignore_errors: yes
+     register: mysql_version
+
+
+
+   - name: get docker version
+     shell:
+       cmd: rpm -qa | grep docker
+     ignore_errors: yes
+     register: docker_version
+
+   - name: get datadog version
+     shell:
+       cmd: rpm -qa | grep datadog-agent
+     ignore_errors: yes
+     register: dd_version
+
+   - name: get openldap version
+     shell:
+       cmd: rpm -qa | grep openldap- | head -n 1
+     ignore_errors: yes
+     register: ldap_version
+
+
+   - name: get openjdk version
+     shell:
+       cmd: rpm -qa | grep openjdk | head -n 1
+     ignore_errors: yes
+     register: jdk_version
+
+   - name: get squid version
+     shell:
+       cmd: rpm -qa | grep squid
+     ignore_errors: yes
+     register: squid_version
+
+   - name: print output of the software you wish  
+     debug:
+       var: httpd_version
+
+
+   - name: Storing the package details of each server into csv by using jinja2 #getting packages from different Instances and store into localhost(csv)
+     template:
+       src: generate_csv.j2
+       dest: /tmp/ansible_example/host_packagesinfo.csv      #{{ '%H:%M:%S' }}  {{ansible_date_time}}
+     delegate_to: localhost
+
+   - name: Append to final package file
+     shell:
+       cmd: cat /tmp/ansible_example/host_packagesinfo.csv >> /tmp/ansible_example/final_packagesinfo.csv
+     delegate_to: localhost
+#   - name: append
+#     lineinfile:
+#       dest: /tmp/ansible_example/packagesinfo_one.csv
+#       line: ""
+#     delegate_to: localhost

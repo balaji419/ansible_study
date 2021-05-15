@@ -1,0 +1,11 @@
+{{ inventory_hostname }} {{ ansible_hostname  }}
+OS {{ os_version.stdout_lines[0] if (os_version.stdout_lines|length>0) else 'NA' }}
+httpd {{ httpd_version.stdout_lines[0] if (httpd_version.stdout_lines|length>0) else 'NA' }}
+ntp {{ ntp_version.stdout_lines[0] if (ntp_version.stdout_lines|length>0) else 'NA' }}
+trendmicro {{ tm_version.stdout_lines[0] if (tm_version.stdout_lines|length>0) else 'NA' }}
+mysql {{ mysql_version.stdout_lines[0] if (mysql_version.stdout_lines|length>0) else 'NA' }}
+docker {{ docker_version.stdout_lines[0] if (docker_version.stdout_lines|length>0) else 'NA' }}
+datadog {{ dd_version.stdout_lines[0] if (dd_version.stdout_lines|length>0) else 'NA' }}
+openldap {{ ldap_version.stdout_lines[0] if (ldap_version.stdout_lines|length>0) else 'NA' }}
+openjdk {{ jdk_version.stdout_lines[0] if (jdk_version.stdout_lines|length>0) else 'NA' }}
+squid {{ squid_version.stdout_lines[0] if (squid_version.stdout_lines|length>0) else 'NA' }}

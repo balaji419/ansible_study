@@ -1,0 +1,32 @@
+- name: getting s3 details
+  hosts: localhost
+  become: yes
+  become_user: root
+  tasks:
+    - name: list all s3 buckets
+      command: 'aws s3 ls'
+      register: s3_bucket
+
+    - name: print bucket list
+      debug:
+        var: s3_bucket.stdout_lines
+
+    - name: check if my required bucket there
+      command: echo {{ s3_bucket.stdout_lines  }}| grep bals-remote
+      register: check_op
+    - name: writng an output in file
+      lineinfile:
+        path: /tmp/hello.txt
+        line: "{{ item }}"
+        owner: root
+        group: root
+        state: present
+        mode: '0644'
+        create: yes
+      with_items:
+        - "{{ s3_bucket.stdout_lines }}"
+
+    - name: print bucket list
+      debug:
+        var: check_op.stdout_lines 
+
