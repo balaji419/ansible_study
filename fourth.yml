@@ -1,0 +1,42 @@
+---
+ - hosts: localhost
+   become: true
+   serial: 1
+   tasks:
+
+
+   - name: get os name
+     shell: rpm --query centos-release
+     ignore_errors: yes
+     register: os_version
+
+
+   - name: get software version for the items mentioned in list
+     shell: 
+       cmd: rpm -qa | grep  "{{ item }}"
+     ignore_errors: yes
+     register: output_result
+     with_items:
+       - httpd
+       - ntp
+      
+#   - name: get software version
+#     debug:
+#       msg: "{{ item }}_version"
+#     with_items:
+#       - httpd
+#       - ntp
+
+
+
+   - name: get_os_version
+     debug: 
+       msg: "{{ item.stdout_lines }}"
+     with_items:
+       - "{{ output_result.results }}"
+
+   - name: Storing the data into csv by using jinja2 #getting packages from different Instances and store into localhost(csv)
+     template:
+       src: generate_csv.j2
+       dest: /tmp/ansible_example/packagesinfo_{{ inventory_hostname }}.csv      #{{ '%H:%M:%S' }}  {{ansible_date_time}}
+     delegate_to: localhost

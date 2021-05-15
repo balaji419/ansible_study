@@ -1,0 +1,9 @@
+- hosts: ponep
+   - name: welcome
+     vars_prompt:
+      - name: "version"
+        prompt: "Docker image version for Liferay app2"
+        private: no
+  tasks:
+  - name: Fetching Docker image version for Liferay
+    shell: whoami
